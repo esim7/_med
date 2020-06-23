@@ -1,4 +1,5 @@
-﻿using Domain.Model;
+﻿using System.Threading.Tasks;
+using Domain.Model;
 
 namespace Infrastructure.DataBase.Interfaces
 {
@@ -7,9 +8,9 @@ namespace Infrastructure.DataBase.Interfaces
         IRepository<Patient> Patients { get; set; }
         IRepository<VisitHistory> VisitHostories { get; set; }
 
-        void Save();
-        void BeginTransaction();
-        void Commit();
-        void Rollback();
+        Task Save();
+        Task BeginTransaction();
+        Task Commit();
+        Task Rollback();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Model;
+﻿using System.Threading.Tasks;
+using Domain.Model;
 using Infrastructure.DataBase.Interfaces;
 using Infrastructure.EntityFramework;
 
@@ -19,29 +20,29 @@ namespace Infrastructure.DataBase.EFImplementations
             this.VisitHostories = visitHostories;
             this._context = context;
         }
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void BeginTransaction()
+        public async Task BeginTransaction()
         {
-            _context.Database.BeginTransaction();
+            await _context.Database.BeginTransactionAsync();
         }
 
-        public void Commit()
+        public async Task Commit()
         {
             if (_context.Database.CurrentTransaction != null)
             {
-                _context.Database.CurrentTransaction.Commit();
+                await _context.Database.CurrentTransaction.CommitAsync();
             }
         }
 
-        public void Rollback()
+        public async Task Rollback()
         {
             if (_context.Database.CurrentTransaction != null)
             {
-                _context.Database.CurrentTransaction.Rollback();
+                await _context.Database.CurrentTransaction.RollbackAsync();
             }
         }
     }

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Domain.Model;
 using Infrastructure.DataBase.Interfaces;
 using Infrastructure.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DataBase.EFImplementations
 {
@@ -15,20 +17,19 @@ namespace Infrastructure.DataBase.EFImplementations
             this._context = context;
         }
 
-        public VisitHistory Get(int? id)
+        public ValueTask<VisitHistory> GetAsync(int? id)
         {
-            return _context.VisitHistories.Find(id);
+            return _context.VisitHistories.FindAsync(id);
         }
 
-        public IList<VisitHistory> GetAll()
+        public Task<List<VisitHistory>> GetAllAsync()
         {
-            return _context.VisitHistories.ToList();
+            return _context.VisitHistories.Include(v => v.Patient).ToListAsync();
         }
 
-        public VisitHistory Create(VisitHistory entity)
+        public async Task CreateAsync(VisitHistory entity)
         {
-            var visitHistory = _context.VisitHistories.Add(entity);
-            return visitHistory.Entity;
+            await _context.VisitHistories.AddAsync(entity);
         }
 
         public VisitHistory Edit(VisitHistory entity)
@@ -48,6 +49,11 @@ namespace Infrastructure.DataBase.EFImplementations
         public void Remove(VisitHistory entity)
         {
             _context.VisitHistories.Remove(entity);
+        }
+
+        public bool Exist(int id)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

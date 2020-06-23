@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Domain.Model;
 using Infrastructure.DataBase.Interfaces;
 using Infrastructure.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DataBase.EFImplementations
 {
@@ -15,20 +17,19 @@ namespace Infrastructure.DataBase.EFImplementations
             this._context = context;
         }
 
-        public Patient Get(int? id)
+        public ValueTask<Patient> GetAsync(int? id)
         {
-            return _context.Patients.Find(id);
+            return _context.Patients.FindAsync(id);
         }
 
-        public IList<Patient> GetAll()
+        public Task<List<Patient>> GetAllAsync()
         {
-            return _context.Patients.ToList();
+            return _context.Patients.ToListAsync();
         }
 
-        public Patient Create(Patient entity)
+        public async Task CreateAsync(Patient entity)
         {
-            var patient = _context.Patients.Add(entity);
-            return patient.Entity;
+            await _context.Patients.AddAsync(entity);
         }
 
         public Patient Edit(Patient entity)
@@ -47,6 +48,11 @@ namespace Infrastructure.DataBase.EFImplementations
         public void Remove(Patient entity)
         {
             _context.Patients.Remove(entity);
+        }
+
+        public bool Exist(int id)
+        {
+            return _context.Patients.Any(e => e.Id == id);
         }
     }
 }
