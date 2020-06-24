@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using CardExample.Models.VisitHistory;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,15 +16,19 @@ namespace CardExample.Controllers
     public class VisitHistoriesController : Controller
     {
         private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
 
-        public VisitHistoriesController(IUnitOfWork uow)
+        public VisitHistoriesController(IUnitOfWork uow, IMapper mapper)
         {
             this._uow = uow;
+            this._mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _uow.VisitHostories.GetAllAsync());
+            var visitHistories = await _uow.VisitHostories.GetAllAsync();
+            var viewModel = _mapper.Map<IList<VisitHistoryViewModel>>(visitHistories);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -37,31 +43,10 @@ namespace CardExample.Controllers
             {
                 return NotFound();
             }
-
-            return View(visitHistory);
+            var viewModel = _mapper.Map<VisitHistoryDetailsViewModel>(visitHistory);
+            return View(viewModel);
         }
 
-        //public IActionResult Create()
-        //{
-        //    ViewData["PatientId"] = new SelectList(_uow.Patients, "Id", "Id");
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("FullName,Position,Diagnose,Complaint,CreationDate,PatientId,Id")] VisitHistory visitHistory)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(visitHistory);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["PatientId"] = new SelectList(_context.Patients, "Id", "Id", visitHistory.PatientId);
-        //    return View(visitHistory);
-        //}
-
-        // GET: VisitHistories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,19 +59,21 @@ namespace CardExample.Controllers
             {
                 return NotFound();
             }
-            //ViewData["PatientId"] = new SelectList(_context.Patients, "Id", "Id", visitHistory.PatientId);
-            return View(visitHistory);
+            ViewBag.Doctors = new SelectList(Enum.GetValues(typeof(DoctorPosition)));
+            var viewModel = _mapper.Map<VisitHistoryEditViewModel>(visitHistory);
+
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FullName,Position,Diagnose,Complaint,CreationDate,PatientId,Id")] VisitHistory visitHistory)
+        public async Task<IActionResult> Edit(int id, [Bind("FullName,Position,Diagnose,Complaint,CreationDate,PatientId,Id")] VisitHistoryEditViewModel viewModel)
         {
-            if (id != visitHistory.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
-
+            var visitHistory = _mapper.Map<VisitHistory>(viewModel);
             if (ModelState.IsValid)
             {
                 try
@@ -107,11 +94,9 @@ namespace CardExample.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            //ViewData["PatientId"] = new SelectList(_context.Patients, "Id", "Id", visitHistory.PatientId);
-            return View(visitHistory);
+            return View(viewModel);
         }
 
-        // GET: VisitHistories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,8 +109,8 @@ namespace CardExample.Controllers
             {
                 return NotFound();
             }
-
-            return View(visitHistory);
+            var viewModel = _mapper.Map<VisitHistoryDeleteVewModel>(visitHistory);
+            return View(viewModel);
         }
 
         [HttpPost, ActionName("Delete")]

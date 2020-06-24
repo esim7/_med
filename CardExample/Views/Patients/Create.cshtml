@@ -1,14 +1,12 @@
-﻿@model Domain.Model.Patient
+﻿@model CardExample.Models.Patient.PatientRequestViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
 
-<h4>Patient</h4>
 <hr />
-<div class="row">
+@*<div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -41,7 +39,68 @@
 
 <div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
+
+
+    <form asp-action="Create">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <h4>Данные пациента</h4>
+                <label asp-for="IIN" class="control-label"></label>
+                <input asp-for="IIN" class="form-control" />
+                <span asp-validation-for="IIN" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <h4>Детали обращения пациента</h4>
+                <label asp-for="DoctorFullName" class="control-label"></label>
+                <input asp-for="DoctorFullName" class="form-control" />
+                <span asp-validation-for="DoctorFullName" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="FullName" class="control-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Position" class="control-label"></label>
+                @Html.DropDownListFor(m => m.Position, ViewBag.Doctors as SelectList, new { @class = "dropdown-item" })
+                <span asp-validation-for="Position" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Diagnose" class="control-label"></label>
+                <input asp-for="Diagnose" class="form-control" />
+                <span asp-validation-for="Diagnose" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Complaint" class="control-label"></label>
+                <input asp-for="Complaint" class="form-control" />
+                <span asp-validation-for="Complaint" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="CreationDate" class="control-label"></label>
+                <input asp-for="CreationDate" class="form-control" />
+                <span asp-validation-for="CreationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Создать обращение" class="btn btn-primary" />
+        </div>
+    </form>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

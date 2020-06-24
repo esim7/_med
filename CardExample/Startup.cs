@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Domain.Model;
 using Infrastructure.DataBase.EFImplementations;
 using Infrastructure.DataBase.Interfaces;
@@ -34,6 +35,8 @@ namespace CardExample
             services.AddScoped<IRepository<Patient>, PatientsRepository>();
             services.AddScoped<IRepository<VisitHistory>, VisitHistoriesRepository>();
             services.AddScoped<IUnitOfWork, EFUnitOfWork>();
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllersWithViews();
         }
