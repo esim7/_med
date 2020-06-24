@@ -145,7 +145,8 @@ namespace CardExample.Controllers
                 return NotFound();
             }
 
-            return View(patient);
+            var viewModel = _map.Map<PatientDeleteViewModel>(patient);
+            return View(viewModel);
         }
 
         [HttpPost, ActionName("Delete")]
