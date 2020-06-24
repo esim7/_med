@@ -54,9 +54,15 @@ namespace CardExample.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Лень было дело ссылку на экшн метод контроллера с созданием инфо о пациенте я сделал инициализацию в одном контроллере,
+        /// потом просто маппил 2 сущности из одной viewModel
+        /// </summary>
+        /// <param name="param-pam-param"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PatientRequestViewModel patientRequestView)
+        public async Task<IActionResult> Create(PatientRequestViewModel patientRequestView) 
         {
             if (ModelState.IsValid)
             {
