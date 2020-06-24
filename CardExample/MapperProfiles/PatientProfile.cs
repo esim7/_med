@@ -9,7 +9,7 @@ namespace CardExample.MapperProfiles
     {
         public PatientProfile()
         {
-            CreateMap<Patient, PatientRequestViewModel>();
+            //CreateMap<Patient, PatientRequestViewModel>();
             CreateMap<PatientRequestViewModel, Patient>();
 
             CreateMap<Patient, PatientViewModel>();

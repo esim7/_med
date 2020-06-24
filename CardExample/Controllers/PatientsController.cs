@@ -60,21 +60,8 @@ namespace CardExample.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newPatient = new Patient()
-                {
-                    IIN = patientRequestView.IIN,
-                    FullName = patientRequestView.FullName,
-                    Address = patientRequestView.Address,
-                    Phone = patientRequestView.Phone,
-                    History = new VisitHistory()
-                    {
-                        FullName = patientRequestView.DoctorFullName,
-                        Position = patientRequestView.Position,
-                        Diagnose = patientRequestView.Diagnose,
-                        Complaint = patientRequestView.Complaint,
-                        CreationDate = patientRequestView.CreationDate,
-                    }
-                };
+                var newPatient = _map.Map<Patient>(patientRequestView);
+                newPatient.History = _map.Map<VisitHistory>(patientRequestView);
                 var createdPatient = await _uow.Patients.CreateAsync(newPatient);
                 await _uow.Save();
 

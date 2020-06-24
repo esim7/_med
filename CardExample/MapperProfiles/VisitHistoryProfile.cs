@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CardExample.Models.Patient;
 using CardExample.Models.VisitHistory;
 using Domain.Model;
 
@@ -8,6 +9,11 @@ namespace CardExample.MapperProfiles
     {
         public VisitHistoryProfile()
         {
+            CreateMap<PatientRequestViewModel, VisitHistory>()
+                .ForMember(dest => dest.FullName, 
+                    exp => 
+                        exp.MapFrom(src => src.DoctorFullName));
+
             CreateMap<VisitHistory, VisitHistoryViewModel>();
             CreateMap<VisitHistoryViewModel, VisitHistory>();
 

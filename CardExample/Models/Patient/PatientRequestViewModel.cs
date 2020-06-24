@@ -14,7 +14,6 @@ namespace CardExample.Models.Patient
         public string Address { get; set; }
         [Display(Name = "Номер телефона")]
         public string Phone { get; set; }
-        public Domain.Model.VisitHistory History { get; set; }
 
         [Display(Name = "ФИО доктора")]
         public string DoctorFullName { get; set; }
