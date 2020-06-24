@@ -25,27 +25,25 @@ namespace CardExample.Controllers
             return View(await _uow.VisitHostories.GetAllAsync());
         }
 
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var visitHistory = await _context.VisitHistories.Include(v => v.Patient)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (visitHistory == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var visitHistory = await _uow.VisitHostories.GetAsync(id);
+            if (visitHistory == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(visitHistory);
-        //}
+            return View(visitHistory);
+        }
 
-        //// GET: VisitHistories/Create
         //public IActionResult Create()
         //{
-        //    ViewData["PatientId"] = new SelectList(_context.Patients, "Id", "Id");
+        //    ViewData["PatientId"] = new SelectList(_uow.Patients, "Id", "Id");
         //    return View();
         //}
 
@@ -63,92 +61,86 @@ namespace CardExample.Controllers
         //    return View(visitHistory);
         //}
 
-        //// GET: VisitHistories/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: VisitHistories/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var visitHistory = await _context.VisitHistories.FindAsync(id);
-        //    if (visitHistory == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["PatientId"] = new SelectList(_context.Patients, "Id", "Id", visitHistory.PatientId);
-        //    return View(visitHistory);
-        //}
+            var visitHistory = await _uow.VisitHostories.GetAsync(id);
+            if (visitHistory == null)
+            {
+                return NotFound();
+            }
+            //ViewData["PatientId"] = new SelectList(_context.Patients, "Id", "Id", visitHistory.PatientId);
+            return View(visitHistory);
+        }
 
-        //// POST: VisitHistories/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("FullName,Position,Diagnose,Complaint,CreationDate,PatientId,Id")] VisitHistory visitHistory)
-        //{
-        //    if (id != visitHistory.Id)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("FullName,Position,Diagnose,Complaint,CreationDate,PatientId,Id")] VisitHistory visitHistory)
+        {
+            if (id != visitHistory.Id)
+            {
+                return NotFound();
+            }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(visitHistory);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!VisitHistoryExists(visitHistory.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["PatientId"] = new SelectList(_context.Patients, "Id", "Id", visitHistory.PatientId);
-        //    return View(visitHistory);
-        //}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _uow.VisitHostories.EditAsync(visitHistory);
+                    await _uow.Save();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!VisitHistoryExists(visitHistory.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            //ViewData["PatientId"] = new SelectList(_context.Patients, "Id", "Id", visitHistory.PatientId);
+            return View(visitHistory);
+        }
 
-        //// GET: VisitHistories/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: VisitHistories/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var visitHistory = await _context.VisitHistories
-        //        .Include(v => v.Patient)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (visitHistory == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var visitHistory = await _uow.VisitHostories.GetAsync(id);
+            if (visitHistory == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(visitHistory);
-        //}
+            return View(visitHistory);
+        }
 
-        //// POST: VisitHistories/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var visitHistory = await _context.VisitHistories.FindAsync(id);
-        //    _context.VisitHistories.Remove(visitHistory);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var visitHistory = await _uow.VisitHostories.GetAsync(id);
+            _uow.VisitHostories.Remove(visitHistory);
+            await _uow.Save();
+            return RedirectToAction(nameof(Index));
+        }
 
-        //private bool VisitHistoryExists(int id)
-        //{
-        //    return _context.VisitHistories.Any(e => e.Id == id);
-        //}
+        private bool VisitHistoryExists(int id)
+        {
+            return _uow.VisitHostories.Exist(id);
+        }
     }
 }

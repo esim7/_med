@@ -5,6 +5,7 @@ using Domain.Model;
 using Infrastructure.DataBase.Interfaces;
 using Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.DataBase.EFImplementations
 {
@@ -17,9 +18,9 @@ namespace Infrastructure.DataBase.EFImplementations
             this._context = context;
         }
 
-        public ValueTask<Patient> GetAsync(int? id)
+        public Task<Patient> GetAsync(int? id)
         {
-            return _context.Patients.FindAsync(id);
+            return _context.Patients.FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public Task<List<Patient>> GetAllAsync()
@@ -27,20 +28,21 @@ namespace Infrastructure.DataBase.EFImplementations
             return _context.Patients.ToListAsync();
         }
 
-        public async Task CreateAsync(Patient entity)
+        public ValueTask<EntityEntry<Patient>> CreateAsync(Patient entity)
         {
-            await _context.Patients.AddAsync(entity);
+            var createdPatient =  _context.Patients.AddAsync(entity);
+            return createdPatient;
         }
 
-        public Patient Edit(Patient entity)
+        public ValueTask<Patient> EditAsync(Patient entity)
         {
-            var patient = _context.Patients.Find(entity.Id);
+            var patient = _context.Patients.FindAsync(entity.Id);
             if (patient != null)
             {
-                patient.IIN = entity.IIN;
-                patient.Address = entity.Address;
-                patient.FullName = entity.FullName;
-                patient.Phone = entity.Phone;
+                patient.Result.IIN = entity.IIN;
+                patient.Result.Address = entity.Address;
+                patient.Result.FullName = entity.FullName;
+                patient.Result.Phone = entity.Phone;
             }
             return patient;
         }

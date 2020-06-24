@@ -5,6 +5,7 @@ using Domain.Model;
 using Infrastructure.DataBase.Interfaces;
 using Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.DataBase.EFImplementations
 {
@@ -17,9 +18,9 @@ namespace Infrastructure.DataBase.EFImplementations
             this._context = context;
         }
 
-        public ValueTask<VisitHistory> GetAsync(int? id)
+        public Task<VisitHistory> GetAsync(int? id)
         {
-            return _context.VisitHistories.FindAsync(id);
+            return _context.VisitHistories.Include(v => v.Patient).FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public Task<List<VisitHistory>> GetAllAsync()
@@ -27,20 +28,21 @@ namespace Infrastructure.DataBase.EFImplementations
             return _context.VisitHistories.Include(v => v.Patient).ToListAsync();
         }
 
-        public async Task CreateAsync(VisitHistory entity)
+        public ValueTask<EntityEntry<VisitHistory>> CreateAsync(VisitHistory entity)
         {
-            await _context.VisitHistories.AddAsync(entity);
+            var createdHistory =  _context.VisitHistories.AddAsync(entity);
+            return createdHistory;
         }
 
-        public VisitHistory Edit(VisitHistory entity)
+        public ValueTask<VisitHistory> EditAsync(VisitHistory entity)
         {
-            var visitHistory = _context.VisitHistories.Find(entity.Id);
+            var visitHistory = _context.VisitHistories.FindAsync(entity.Id);
             if (visitHistory != null)
             {
-                visitHistory.Position = entity.Position;
-                visitHistory.FullName = entity.FullName;
-                visitHistory.Diagnose = entity.Diagnose;
-                visitHistory.Complaint = entity.Complaint;
+                visitHistory.Result.Position = entity.Position;
+                visitHistory.Result.FullName = entity.FullName;
+                visitHistory.Result.Diagnose = entity.Diagnose;
+                visitHistory.Result.Complaint = entity.Complaint;
             }
 
             return visitHistory;
@@ -53,7 +55,7 @@ namespace Infrastructure.DataBase.EFImplementations
 
         public bool Exist(int id)
         {
-            throw new System.NotImplementedException();
+            return _context.VisitHistories.Any(e => e.Id == id);
         }
     }
 }

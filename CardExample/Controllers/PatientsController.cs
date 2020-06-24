@@ -50,7 +50,7 @@ namespace CardExample.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _uow.Patients.CreateAsync(patient);
+                var createdPatient = await _uow.Patients.CreateAsync(patient);
                 await _uow.Save();
                 return RedirectToAction(nameof(Index));
             }
@@ -85,7 +85,7 @@ namespace CardExample.Controllers
             {
                 try
                 {
-                    _uow.Patients.Edit(patient);
+                    await _uow.Patients.EditAsync(patient);
                     await _uow.Save();
                 }
                 catch (DbUpdateConcurrencyException)
