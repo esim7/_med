@@ -23,6 +23,7 @@ namespace CardExample.MapperProfiles
 
             CreateMap<Patient, PatientDeleteViewModel>();
             CreateMap<PatientDeleteViewModel, Patient>();
+            
         }
     }
 }
